@@ -1,0 +1,82 @@
+{% extends "template.html" %}
+{% block content %}
+    <div class="body-title">
+        <h2>{{ title }}</h2>
+    </div>
+    <div class="address-form-container">
+        <div class="card-group-cart">
+            {% for item in cart_items %}
+                {% for drink in drinks %}
+                    {% if item.drinks_id == drink.id %}
+                        <div class="card">
+                        {% for image in images %}
+                            {% if image.id == drink.id %}
+                                <img src="{{ url_for('static', filename='images/' + image.filename) }}">
+                            {% endif %}
+                        {% endfor %}
+                            <div class="card-body">
+                                <p class="card-title">{{ drink.name }}</p>
+                                <div>
+                                    <div class="card-center-edit" style="align-self: center; align-items: center;">
+                                        <ul>
+                                            <li>Price: ${{ drink.price }}</li>
+                                            <li style="padding-top: 5px;">Amount: {{item.quantity}}</li>
+                                        </ul>
+                                        <p></p>
+                                        <div>
+                                            <input type="hidden" name="item_id" value="{{ drink.id }}">
+                                            <input type="hidden" name="item_price" value="{{ drink.price }}">
+                                        </div>
+                                    </div>
+                                    <div class="card-description">
+                                        <p>{{ drink.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <div class="address-form">
+            <h2>Confirm your address and payment:</h2>
+            <form method="post" action="checkout">
+                <div>
+                    <div>
+                        <div>
+                            <label>City</label>
+                            <select name="city">
+                                <option value="João Pessoa">João Pessoa</option>
+                                <option value="Recife">Recife</option>
+                                <option value="Natal">Natal</option>
+                            </select>
+                        </div>
+                        <div >
+                            <label>District</label>
+                            <input type="text" name="district" required placeholder="District">
+                        </div>
+                        <div>
+                            <label >Address</label>
+                            <input type="text" name="address" required placeholder="Address">
+                        </div>
+                    </div>
+                    <div>
+                        <div >
+                            <label>Credit Card Number</label>
+                            <input style="width: max-content" type="text" name="credit" required pattern="[0-9]{16-19}" maxlength="19" placeholder="XXXXXXXXXXXXXXXX">
+
+                        </div>
+                        <div>
+                            <label >CVC</label>
+                            <input type="text" name="cvc" required pattern="[0-9]{3}" maxlength="3" placeholder="XXX">
+                        </div>
+                    </div>
+                </div>
+                <button class="form-btn" type="submit">Confirm order</button>
+            </form>
+        </div>
+    </div>
+    <div>
+        <p class="total-amount-display"> TOTAL: ${{total_amount}}</p>
+    </div>
+{% endblock %}

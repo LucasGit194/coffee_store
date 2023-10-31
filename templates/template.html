@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Coffee Shop</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='reset.css')}}">
+    </head>
+    {% if main %}
+        <header>
+        <div id="imageCarousel" class="carousel" data-ride="carousel">
+            <ol class="carousel-indicators">
+                {% for image in c_images %}
+                    <li data-target="#imageCarousel" data-slide-to="{{ loop.index0 }}" {% if loop.first %}class="active"{% endif %}></li>
+                {% endfor %}
+            </ol>
+            <div class="carousel-inner">
+                {% for image in carousel.images %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ url_for('static', filename= 'images/' + image) }}" class="d-block w-100" alt="Image {{ loop.index }}" style="width: 100vw;">
+                        <div>
+                            <ul class="list-unstyled">
+                                <li id="carouselMessage" class="carousel-message">
+                                    {{ image_to_message_map[image]|safe }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            </div>
+            <a class="carousel-control-prev" href="#imageCarousel" data-slide="prev">
+                <span data-page="main" class="carousel-control-prev-icon" style="left: 10px"></span>
+            </a>
+            <a class="carousel-control-next" href="#imageCarousel" data-slide="next">
+                <span data-page="main" class="carousel-control-next-icon" style="right: 10px"></span>
+            </a>
+        </div>
+        <script>
+            $('#imageCarousel').on('slide.bs.carousel', function (e) {
+                var C_message = e.relatedTarget.querySelector('p').src;
+                $('#carouselMessage').text(image);
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+         crossorigin=""></script>
+        <script >
+            const header = document.querySelector("header");
+            const
+            const isHomePage = () => {
+              return window.location.pathname === "/";
+            };
+
+            header.style.display = isHomePage() ? "block" : "none";
+        </script>
+    </header>
+    {% endif %}
+    <body class="body">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div>
+                    <ul id="messages" class="list-unstyled">
+                    {% for message in messages %}
+                        <li class="alert alert-success">{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% if main %}
+
+        {% endif %}
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+         crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+        integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+        crossorigin=""></script>
+        <main>
+
+                {% block content %}{% endblock %}
+
+
+        </main>
+        {% if main %}
+        <footer class="main-footer">
+            <p>Developed by Lucas Souza</p>
+        </footer>
+        {% else %}
+        <footer class="footer">
+            <p>Developed by Lucas Souza</p>
+        </footer>
+        {% endif %}
+        <script >
+            const isPageCheckout = () => {
+            return window.location.pathname === "/checkout";
+            };
+
+            const body = document.querySelector("body");
+            const gridTemplateRows = body.style.gridTemplateRows;
+
+            body.style.gridTemplateRows = isPageCheckout() ? "0 20vh auto 50px" : gridTemplateRows;
+        </script>
+        <script>
+            const cardGroup = document.querySelector(".card-group");
+            cardGroup.classList.replace("card-group", "card-group-home");
+        </script>
+    </body>
+</html>

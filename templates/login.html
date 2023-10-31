@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>my_coffe_shop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <div class="map-form">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div>
+                        <ul id="messages" class="list-unstyled">
+                        {% for message in messages %}
+                            <li class="alert alert-success">{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+            <div>
+                <h2 style="font-size: 4rem;">Login</h2>
+                <form method="POST" action="{{ url_for('authenticate') }}">
+                    <div>
+                        <div>
+                            <input type="hidden" name="next" value="{{ next or url_for('index') }}">
+                            <div>
+                                <label style="font-size: 1.5rem;">Username:</label>
+                                <input type="text" name="user" required>
+                            </div>
+                            <div>
+                                <label style="font-size: 1.5rem;">Password:</label>
+                                <input type="password" name="password" required>
+                            </div>
+                            <div>
+                                <button class="form-btn" style="margin-top: 25px;" type="submit">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

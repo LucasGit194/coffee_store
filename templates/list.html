@@ -1,0 +1,85 @@
+{% extends "template.html" %}
+{% block content %}
+    <div class="main-title">
+        <h1>Welcome to MyCoffee_Shop</h1>
+    </div>
+    <div class="body-title">
+        <h2>{{ title }}</h2>
+        {% if session['logged']%}
+            <form action="{{ url_for('logout') }}">
+                <button class="form-btn" type="submit">Logout</button>
+            </form>
+        {% else %}
+            <form action="{{ url_for('login') }}">
+                <button class="form-btn" type="submit">Login</button>
+            </form>
+        {% endif %}
+    </div>
+    <form class="card-container" action="{{ url_for('cart') }}" method="post">
+        <div class="card-group">
+            {% for drink in drinks %}
+                {% if top_seller_drink.id == drink.id %}
+                <div class="top-seller-card">
+                            <img id="top-seller-sticker" src=" {{ url_for('static', filename='images/top-seller.png') }} ">
+                    {% for image in images %}
+                        {% if image.id == drink.id %}
+                            <img src="{{ url_for('static', filename='images/' + image.filename) }}">
+                        {% endif %}
+                    {% endfor %}
+                        <div class="card-body">
+                            <p class="top-seller-card-title">{{ drink.name }}
+                                {% if session['admin']%}
+                                <a href="{{ url_for('edit', id=drink.id) }}">Edit</a>
+                            {% endif %}
+                            </p>
+                            <div>
+                                <div class="top-seller-card-center">
+                                    <p>Price: ${{ drink.price }}</p>
+                                    <div>
+                                        <input type="hidden" name="item_id" value="{{ drink.id }}">
+                                        <input type="hidden" name="item_price" value="{{ drink.price }}">
+                                        <input type="number" name="quantity" value="0" min="0">
+                                    </div>
+                                </div>
+                                <div class="top-seller-card-description">
+                                    <p>{{ drink.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card">
+                        {% for image in images %}
+                            {% if image.id == drink.id %}
+                                <img src="{{ url_for('static', filename='images/' + image.filename) }}">
+                            {% endif %}
+                        {% endfor %}
+                            <div class="card-body">
+                                <p class="card-title">{{ drink.name }}
+                                    {% if session['admin']%}
+                                    <a href="{{ url_for('edit', id=drink.id) }}">Edit</a>
+                                {% endif %}
+                                </p>
+                                <div>
+                                    <div class="card-center">
+                                        <p>Price: ${{ drink.price }}</p>
+                                        <div>
+                                            <input type="hidden" name="item_id" value="{{ drink.id }}">
+                                            <input type="hidden" name="item_price" value="{{ drink.price }}">
+                                            <input type="number" name="quantity" value="0" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="card-description">
+                                        <p>{{ drink.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div>
+            <button style="margin: 20px 0 26px;" type="submit" class="form-btn">Add to cart</button>
+        </div>
+    </form>
+{% endblock %}

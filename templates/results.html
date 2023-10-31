@@ -1,0 +1,64 @@
+{% extends "template.html" %}
+{% block content %}
+    {% if show_map == True %}
+                <div class="map-results">
+                    <h2>Here is the nearest Store to you!</h2>
+                    <p>{{ store_city }} - {{ store_region }}</p>
+                    <p> at {{ distance }} Km away from your place!</p>
+                </div>
+                <div class="map-container">
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+                     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+                     crossorigin=""/>
+                    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+                    integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+                    crossorigin=""></script>
+                    <div id="map"></div>
+                    <form method="post">
+                        <input type="hidden" name="lat" id="lat" value="{{ lat }}">
+                        <input type="hidden" name="lon" id="lon" value="{{ lon }}">
+                    </form>
+                    <script>
+
+                        const lat = document.getElementById("lat").value
+                        const lon = document.getElementById("lon").value
+                        console.log(lat)
+                        console.log(lon)
+
+                        const map = L.map('map');
+                        map.setView([lat, lon], 13);
+
+                        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        }).addTo(map);
+
+                        let marker, circle, zoomed;
+
+                        marker = L.marker([lat, lon]).addTo(map).bindPopup("Delicious coffee here!");
+
+                        if (!zoomed) {
+                            zoomed = map.fitBounds(circle.getBounds());
+                        }
+
+                        map.setView([lat, lon]);
+                    </script>
+                </div>
+                <div class="redirect-to-home">
+                    <a href="{{ url_for('index') }}">Let's get some coffee now!!!</a>
+                </div>
+    {% else %}
+                <div class="address-form" style="display: inline; text-align: center;">
+                    <h2>We're sorry but no store near you!</h2>
+                    <p>We're always expanding<br>so we can meet someday</p>
+                    <div class="loader-container">
+                        <div id="loader"></div>
+                    </div>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        window.location.href = "/";
+                    }, 6000);
+                </script>
+    {% endif %}
+{% endblock %}
