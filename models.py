@@ -1,4 +1,4 @@
-from coffee_shop import db
+from store import db
 
 
 class Users(db.Model):

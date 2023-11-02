@@ -4,9 +4,9 @@ from mysql.connector import errorcode
 print("Conecting...")
 try:
     conn = mysql.connector.connect(
-        host='127.0.0.1',
-        user='root',
-        password='Admin123'
+        host='lucasgit194.mysql.pythonanywhere-services.com',
+        user='lucasgit194',
+        password='mYsql;2901'
     )
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -15,9 +15,9 @@ except mysql.connector.Error as err:
         print(err)
 
 cursor = conn.cursor()
-cursor.execute("DROP DATABASE IF EXISTS coffee_shop;")
-cursor.execute("CREATE DATABASE coffee_shop;")
-cursor.execute("USE coffee_shop;")
+# cursor.execute("DROP DATABASE IF EXISTS lucasgit194$default;")
+# cursor.execute("CREATE DATABASE lucasgit194$default;")
+cursor.execute("USE lucasgit194$default;")
 
 #creating tables
 TABLES = {}
@@ -90,14 +90,14 @@ for table_name in TABLES:
         print("OK!")
 
 #inserting users
-sql_users = 'INSERT INTO Users (first_name, last_name, username, password, admin) VALUES (%s, %s, %s, %s, %s)'
+sql_users = 'INSERT INTO users (first_name, last_name, username, password, admin) VALUES (%s, %s, %s, %s, %s)'
 users = [
     ("Lucas", "Souza", "lucasouza", "pass1", "1"),
     ("João", "Silva", "joaosilva", "pass2", "0")
 ]
 cursor.executemany(sql_users, users)
 
-cursor.execute('select * from coffee_shop.users')
+cursor.execute('select * from lucasgit194$default.users')
 print('---------------- Users: ----------------')
 for user in cursor.fetchall():
     print(user[1] + " " + user[2])
@@ -105,8 +105,8 @@ print("\n")
 
 #inserting drinks and images
 
-sql_drinks = 'INSERT INTO Drinks (name, price, units_sold, description) VALUES (%s, %s, %s, %s)'
-sql_images = 'INSERT INTO Images (id, filename) VALUES (%s, %s)'
+sql_drinks = 'INSERT INTO drinks (name, price, units_sold, description) VALUES (%s, %s, %s, %s)'
+sql_images = 'INSERT INTO images (id, filename) VALUES (%s, %s)'
 drinks = [
     ("EXPRESSO", "5.00", "100", "1 Shot of Expresso"),
     ("AMERICANO", "5.00", "100", "Hot Water + 1 Shot of Expresso"),
@@ -122,7 +122,7 @@ images = []
 
 cursor.executemany(sql_drinks, drinks)
 
-cursor.execute('select * from coffee_shop.drinks')
+cursor.execute('select * from lucasgit194$default.drinks')
 print('---------------- Drinks: ----------------')
 for drink in cursor.fetchall():
     print(drink[1])
@@ -132,7 +132,7 @@ for drink in cursor.fetchall():
 print("\n")
 
 cursor.executemany(sql_images, images)
-cursor.execute('select * from coffee_shop.images')
+cursor.execute('select * from lucasgit194$default.images')
 print('---------------- Images: ----------------')
 for image in cursor.fetchall():
     print(image[1])
@@ -140,7 +140,7 @@ print("\n")
 
 #inserting states and stores
 
-sql_states = 'INSERT INTO States (region_code, region_name) VALUES (%s, %s)'
+sql_states = 'INSERT INTO states (region_code, region_name) VALUES (%s, %s)'
 states = [
     ("AC", "Acre"),
     ("AL", "Alagoas"),
@@ -172,13 +172,13 @@ states = [
 
 
 cursor.executemany(sql_states, states)
-cursor.execute('select * from coffee_shop.states')
+cursor.execute('select * from lucasgit194$default.states')
 print('---------------- States: ----------------')
 for state in cursor.fetchall():
     print(state[1])
 print("\n")
 
-sql_stores = 'INSERT INTO Stores (id, store_city, store_region, lat, lon) VALUES (%s, %s, %s, %s, %s)'
+sql_stores = 'INSERT INTO stores (id, store_city, store_region, lat, lon) VALUES (%s, %s, %s, %s, %s)'
 stores = [
     ("Q167436", "João Pessoa", "PB", "-7.144081", "-34.818773"),
     ("Q22061296", "Recife", "PE", "-7.952330", "-34.925290"),
@@ -186,7 +186,7 @@ stores = [
 ]
 
 cursor.executemany(sql_stores, stores)
-cursor.execute('select * from coffee_shop.stores')
+cursor.execute('select * from lucasgit194$default.stores')
 print('---------------- Stores: ----------------')
 for store in cursor.fetchall():
     print(str(store[0]) + " - " + store[1])

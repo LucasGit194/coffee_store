@@ -1,6 +1,6 @@
 from api_requests import *
 from flask import render_template, request, redirect, session, flash, url_for
-from coffee_shop import app, db
+from store import app, db
 from models import *
 from decimal import Decimal
 
@@ -45,10 +45,13 @@ def carousel():
 @app.route('/')
 def index():
     session['cart_items'] = list()
-    top_seller_drink = Drinks.query.order_by(Drinks.units_sold.desc()).first()
-    drinks = Drinks.query.order_by(Drinks.units_sold.desc())
-
-    images = Images.query.order_by(Images.id)
+    drinks = db.session.scalars(db.select(Drinks).order_by(Drinks.units_sold.desc()))
+    top_seller_drink = drinks.first() #tentar dessa forma, se der errado voltar a forma comum, fazendo fois queries
+    # top_seller_drink = Drinks.query.order_by(Drinks.units_sold.desc()).first()
+    # drinks = db.session.scalars(db.select(Drinks.units_sold.desc()))
+    # drinks = Drinks.query.order_by(Drinks.units_sold.desc())
+    images = db.session.scalars(db.select(Images).order_by(Images.id))
+    # images = Images.query.order_by(Images.id)
     carousel_payload = carousel()
     c_image_to_message_map = carousel_payload['image_to_message_map']
 
