@@ -1009,6 +1009,10 @@ input[type=number] {
         height: unset;
     }
 
+    #top-seller-sticker {
+        width: 50%;
+    }
+
     .top-seller-card-body {
         border-top: 3px solid;
         border-left: unset;
@@ -1052,7 +1056,12 @@ input[type=number] {
     }
 
     .checkout-message {
-        padding-top: unset;
+        padding-top: 100px;
+    }
+
+    .checkout-message h2 {
+        font-size: 3rem;
+        font-family: var(--body-title-font);
     }
 
     .map-form h2 {

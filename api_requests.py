@@ -1,17 +1,16 @@
 import requests
 import time
 from models import Stores
+from store import db
 
 
 def api_distance_request(input):
-
+    print(input)
     if len(input) > 0:
         user_city_id = input.get('wikiDataId')
         user_region_code = input.get('regionCode')
         user_region_name = input.get('region')
-
-        stores = Stores.query.order_by(Stores.id)
-
+        stores = db.session.scalars(db.select(Stores).order_by(Stores.id)).all()
         results = []
         api_response = {}
         for store in stores:
@@ -20,9 +19,6 @@ def api_distance_request(input):
             store_region = store.store_region
             lat = store.lat
             lon = store.lon
-
-            print(store_region)
-            print(user_region_code)
 
             if store_region == user_region_code:
 
@@ -40,7 +36,7 @@ def api_distance_request(input):
                 }
 
                 url = f"https://wft-geo-db.p.rapidapi.com/v1/geo/places/{user_city_id}/distance"
-                print(store_id)
+
                 querystring = {"distanceUnit": "KM", "toPlaceId": f"{store_id}"}
 
                 headers = {
@@ -69,6 +65,7 @@ def api_distance_request(input):
 
 
 def api_city_request(query):
+    print(query)
     url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"
 
     querystring = {"types": "CITY", "countryIds": "BR", "namePrefix": "{}".format(query),
@@ -83,6 +80,7 @@ def api_city_request(query):
     time.sleep(0.6)
 
     json = response.json()
+    print(json)
 
     data = json.get('data')
     return data

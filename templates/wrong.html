@@ -1,0 +1,15 @@
+{% extends "template.html" %}
+{% block content %}
+    <div class="checkout-message">
+                    <h2>Hum... Something is wrong</h2>
+                    <p>Try correcting your input<br>This can help</p>
+                    <div class="loader-container">
+                        <div id="loader"></div>
+                    </div>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        window.location.href = "/address";
+                    }, 6000);
+                </script>
+{% endblock %}

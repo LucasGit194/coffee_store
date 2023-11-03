@@ -42,16 +42,14 @@ def carousel():
     return carousel
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     session['cart_items'] = list()
-    drinks = db.session.scalars(db.select(Drinks).order_by(Drinks.units_sold.desc()))
-    top_seller_drink = drinks.first() #tentar dessa forma, se der errado voltar a forma comum, fazendo fois queries
-    # top_seller_drink = Drinks.query.order_by(Drinks.units_sold.desc()).first()
-    # drinks = db.session.scalars(db.select(Drinks.units_sold.desc()))
-    # drinks = Drinks.query.order_by(Drinks.units_sold.desc())
-    images = db.session.scalars(db.select(Images).order_by(Images.id))
-    # images = Images.query.order_by(Images.id)
+    drinks = db.session.scalars(db.select(Drinks).order_by(Drinks.units_sold.desc())).all()
+    top_seller_drink = drinks[0]
+
+    images = db.session.scalars(db.select(Images).order_by(Images.id)).all()
+
     carousel_payload = carousel()
     c_image_to_message_map = carousel_payload['image_to_message_map']
 
@@ -75,7 +73,7 @@ def authenticate():
     password = request.form['password']
     username = request.form['user']
 
-    user = Users.query.filter_by(password=password).first()
+    user = db.session.scalars(db.select(Users).filter_by(password=password)).first()
 
     user_password = user.password
     user_username = user.username
@@ -108,7 +106,7 @@ def cart():
     if 'cart_items' not in session or session['cart_items'] is None:
         session['cart_items'] = list()
 
-    drinks = []
+    drinks = list()
     item_ids = request.form.getlist('item_id')
     item_prices = request.form.getlist('item_price')
     quantities = request.form.getlist('quantity')
@@ -117,13 +115,14 @@ def cart():
     item_ids = [int(i) for i in item_ids]
     item_prices = [Decimal(i) for i in item_prices]
 
-    drinks_query = Drinks.query.order_by(Drinks.id)
-    images = Images.query.order_by(Images.id)
-    users = Users.query.order_by(Users.id)
+    drinks_query = db.session.scalars(db.select(Drinks).order_by(Drinks.id.desc())).all()
+    images = db.session.scalars(db.select(Images).order_by(Images.id.desc())).all()
+    users = db.session.scalars(db.select(Users).order_by(Users.id.desc())).all()
 
-    amount_per_drink_type = []
+    amount_per_drink_type = list()
     total_amount = 0
-    order = Orders()
+    order = db.session.scalars(db.select(Orders).order_by(Orders.id)).first()
+
     for user in users:
         if user.id in session:
             order = Orders(users_id=session['user_id'])
@@ -137,7 +136,7 @@ def cart():
             order_item = OrderItems(drinks_id=item_id, drinks_price=item_price, quantity=quantity, order_id=order_id)
             amount_per_drink_type.append(item_price * quantity)
 
-            drink = Drinks.query.get(item_id)
+            drink = db.session.scalars(db.select(Drinks).filter_by(id = item_id)).first()
             drink.units_sold += quantity
             db.session.commit()
 
@@ -186,7 +185,7 @@ def checkout():
 @app.route('/address', methods=['POST', 'GET'])
 def address():
     main = is_main_page()
-    states = States.query.order_by(States.region_code)
+    states = db.session.scalars(db.select(States).order_by(States.region_code))
 
     return render_template('address.html', title='MAP', main=main, states=states)
 
@@ -196,31 +195,35 @@ def results():
     if request.method == 'POST':
         city = request.form['city']
         state = request.form['state']
+
         data = api_city_request(city)
+        main = is_main_page()
 
         filtered_result = filter(lambda entry: entry['regionCode'] == state, data)
         filtered_result = list(filtered_result)
-        nearest_store = api_distance_request(filtered_result[0])
 
-        main = is_main_page()
+        if len(filtered_result) > 0:
+            nearest_store = api_distance_request(filtered_result[0])
 
-        if nearest_store:
-            show_map = True
-            store_data = nearest_store[0]['store_data']
-            store_region = store_data['store_region']
-            store_city = store_data['store_city']
-            lat = store_data['lat']
-            lon = store_data['lon']
-            distance = store_data['distance']
+            if nearest_store:
+                show_map = True
+                store_data = nearest_store[0]['store_data']
+                store_region = store_data['store_region']
+                store_city = store_data['store_city']
+                lat = store_data['lat']
+                lon = store_data['lon']
+                distance = store_data['distance']
 
-            return render_template('results.html', store_city=store_city, store_region=store_region,
-                                   distance=distance, lat=lat, lon=lon, show_map=show_map,
-                                   main=main)
+                return render_template('results.html', store_city=store_city, store_region=store_region,
+                                       distance=distance, lat=lat, lon=lon, show_map=show_map,
+                                       main=main)
+            else:
+                show_map = False
+
+                return render_template('results.html', show_map=show_map,
+                                       main=main)
         else:
-            show_map = False
-
-            return render_template('results.html', show_map=show_map,
-                                   main=main)
+            return  render_template('wrong.html', main=main)
 
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -228,8 +231,8 @@ def edit(id):
     if session['logged'] is False or session['admin'] is False:
         return redirect((url_for('/', next=url_for('edit'))))
 
-    drink = Drinks.query.filter_by(id=id).first()
-    image = Images.query.filter_by(id=id).first()
+    drink = db.session.scalars(db.select(Drinks).filter_by(id=id)).first()
+    image = db.session.scalars(db.select(Images).filter_by(id=id)).first()
     main = is_main_page()
 
     return render_template('edit.html', title='Editing a drink', main=main, drink=drink, image=image)
@@ -237,7 +240,7 @@ def edit(id):
 
 @app.route('/update', methods=['POST'])
 def update():
-    drink = Drinks.query.filter_by(id=request.form['item_id']).first()
+    drink = db.session.scalars(db.select(Drinks).filter_by(id=request.form['item_id'])).first()
     drink.name = request.form['name']
     drink.price = Decimal(request.form['price'])
     drink.description = request.form['description']
