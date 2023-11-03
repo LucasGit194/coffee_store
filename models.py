@@ -66,4 +66,4 @@ class Stores(db.Model):
     lon = db.Column(db.DECIMAL(precision=5, scale=8), nullable=False)
 
     def __repr__(self):
-        return '<Name %r>' % self.name
+        return '<%r Store>' % self.store_city

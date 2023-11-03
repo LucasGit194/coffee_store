@@ -806,6 +806,11 @@ h3 {
     padding-top: 150px;
 }
 
+.checkout-message h2 {
+    font-family: var(--body-title-font);
+    font-size: var(--body-title-size);
+}
+
 .checkout-message p,
 .checkout-message strong {
     margin: 5px 0 5px;
@@ -970,7 +975,7 @@ input[type=number] {
     }
 
     .card {
-        width: 40vh;
+        width: 70%;
         flex-direction: column;
     }
 
@@ -1000,7 +1005,7 @@ input[type=number] {
     }
 
     .top-seller-card {
-        width: 40vh;
+        width: 70%vh;
         flex-direction: column;
     }
 
@@ -1010,7 +1015,7 @@ input[type=number] {
     }
 
     #top-seller-sticker {
-        width: 50%;
+        width: 45%;
     }
 
     .top-seller-card-body {

@@ -5,14 +5,16 @@ from store import db
 
 
 def api_distance_request(input):
-    print(input)
+
     if len(input) > 0:
         user_city_id = input.get('wikiDataId')
+        user_city_name = input.get('city')
         user_region_code = input.get('regionCode')
         user_region_name = input.get('region')
         stores = db.session.scalars(db.select(Stores).order_by(Stores.id)).all()
-        results = []
-        api_response = {}
+        results = list()
+        api_response = dict()
+
         for store in stores:
             store_id = store.id
             store_city = store.store_city
@@ -21,20 +23,20 @@ def api_distance_request(input):
             lon = store.lon
 
             if store_region == user_region_code:
-
+                print("here")
                 user_data = {
                     'user_region_code': user_region_code,
                     'user_region_name': user_region_name,
                     'user_city_id': user_city_id
                 }
-
+                print(user_data)
                 store_data = {
                     'store_region': store_region,
                     'store_city': store_city,
                     'lat': lat,
                     'lon': lon,
                 }
-
+                print(store_data)
                 url = f"https://wft-geo-db.p.rapidapi.com/v1/geo/places/{user_city_id}/distance"
 
                 querystring = {"distanceUnit": "KM", "toPlaceId": f"{store_id}"}
@@ -55,17 +57,14 @@ def api_distance_request(input):
                 api_response.update({'store_data': store_data})
                 results.append(api_response)
 
-                print("printing the output of the api")
+                print("printing results")
                 print(results)
                 return results
-            else:
-                return False
     else:
         return False
 
 
 def api_city_request(query):
-    print(query)
     url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"
 
     querystring = {"types": "CITY", "countryIds": "BR", "namePrefix": "{}".format(query),
@@ -80,7 +79,6 @@ def api_city_request(query):
     time.sleep(0.6)
 
     json = response.json()
-    print(json)
 
     data = json.get('data')
     return data
