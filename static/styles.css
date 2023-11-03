@@ -1005,7 +1005,7 @@ input[type=number] {
     }
 
     .top-seller-card {
-        width: 70%vh;
+        width: 70%;
         flex-direction: column;
     }
 
