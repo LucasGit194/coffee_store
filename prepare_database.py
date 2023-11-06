@@ -4,9 +4,9 @@ from mysql.connector import errorcode
 print("Conecting...")
 try:
     conn = mysql.connector.connect(
-        host='lucasgit194.mysql.pythonanywhere-services.com',
-        user='lucasgit194',
-        password='mYsql;2901'
+        host='host',
+        user='user',
+        password='password'
     )
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -15,11 +15,10 @@ except mysql.connector.Error as err:
         print(err)
 
 cursor = conn.cursor()
-# cursor.execute("DROP DATABASE IF EXISTS lucasgit194$default;")
-# cursor.execute("CREATE DATABASE lucasgit194$default;")
-cursor.execute("USE lucasgit194$default;")
+cursor.execute("USE database;")
 
 #creating tables
+
 TABLES = {}
 TABLES['Users'] = ('''
         CREATE TABLE users (
@@ -97,7 +96,7 @@ users = [
 ]
 cursor.executemany(sql_users, users)
 
-cursor.execute('select * from lucasgit194$default.users')
+cursor.execute('select * from database.users')
 print('---------------- Users: ----------------')
 for user in cursor.fetchall():
     print(user[1] + " " + user[2])
@@ -122,7 +121,7 @@ images = []
 
 cursor.executemany(sql_drinks, drinks)
 
-cursor.execute('select * from lucasgit194$default.drinks')
+cursor.execute('select * from database.drinks')
 print('---------------- Drinks: ----------------')
 for drink in cursor.fetchall():
     print(drink[1])
@@ -132,7 +131,7 @@ for drink in cursor.fetchall():
 print("\n")
 
 cursor.executemany(sql_images, images)
-cursor.execute('select * from lucasgit194$default.images')
+cursor.execute('select * from database.images')
 print('---------------- Images: ----------------')
 for image in cursor.fetchall():
     print(image[1])
@@ -172,7 +171,7 @@ states = [
 
 
 cursor.executemany(sql_states, states)
-cursor.execute('select * from lucasgit194$default.states')
+cursor.execute('select * from database.states')
 print('---------------- States: ----------------')
 for state in cursor.fetchall():
     print(state[1])
@@ -186,7 +185,7 @@ stores = [
 ]
 
 cursor.executemany(sql_stores, stores)
-cursor.execute('select * from lucasgit194$default.stores')
+cursor.execute('select * from database.stores')
 print('---------------- Stores: ----------------')
 for store in cursor.fetchall():
     print(str(store[0]) + " - " + store[1])
