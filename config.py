@@ -1,10 +1,10 @@
-SECRET_KEY = 'coffee'
+SECRET_KEY = 'random'
 
 SQLALCHEMY_DATABASE_URI = \
     '{SGBD}://{user}:{password}@{host}/{database}'.format(
         SGBD='mysql+mysqlconnector',
-        user='lucasgit194',
-        password='mYsql;2901',
-        host='lucasgit194.mysql.pythonanywhere-services.com',
-        database='lucasgit194$default'
+        user='user',
+        password='password',
+        host='host',
+        database='database'
     )
