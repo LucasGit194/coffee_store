@@ -295,10 +295,98 @@ main {
     font-size: 100%;
 }
 
+.menu {
+    list-style: none;
+    z-index: 900;
+    position: absolute;
+    right: 0;
+    top: 372px;
+    color: #FFF;
+    font-family: var(--body-title-font);
+}
+
+.menu li {
+    position: relative;
+}
+
+#menu-bar {
+    display:none;
+}
+
+.menu label {
+    display: block;
+    color: #FFF;
+    text-decoration: none;
+    text-align: center;
+    font-size: 4rem;
+}
+
+.menu li a {
+    display: block;
+    color: #FFF;
+    text-decoration: none;
+    text-align: center;
+    font-size: 4rem;
+}
+
+.menu li ul.dropdown li {
+    display: block;
+    font-size: 2.5rem;
+    width: 100%;
+    background-image: linear-gradient(to right,#1D2971, #1D1A6E);
+    border-top: white solid;
+}
+
+.menu li ul.dropdown li a {
+    font-size: 2.5rem;
+}
+
+.menu li ul.dropdown {
+    width: 100%;
+    position: absolute;
+    z-index: 999;
+    display: none;
+    padding-top: 15px;
+    margin: 3px;
+}
+
+.menu li:hover ul.dropdown,
+#menu-bar:checked ~ ul.dropdown {
+    display: block;
+}
+
 h3 {
     font-family: var(--body-title-font);
     font-size: var(--body-title-size);
     font-weight: var(--body-font-weight);
+}
+
+.filter {
+    position: absolute;
+    bottom: 130px;
+    left: 50px;
+    background: var(--indigo);
+    font-size: 2rem;
+    border-radius: 5px;
+    padding: 0 10px;
+}
+
+.filter p {
+    margin: 10px 0 20px 0;
+    font-family: var(--body-title-font);
+}
+
+.filter ul {
+    padding: 0 20px 0 10px;
+    list-style
+}
+
+.filter li {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 1.5rem;
+    text-align: start;
 }
 
 .card-container {
@@ -378,11 +466,67 @@ h3 {
 
 .top-seller-card-center {
     display: flex;
-    padding: 20px;
+    padding: 15px;
     align-items: center;
     background-image: linear-gradient(to right,#EF9B0F, #FFBA00, #EF9B0F);
     border-top: 3px solid #FF0;
     border-bottom: solid #FF0;
+}
+
+.top-seller-card-center div div,
+.card-center div div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-center div div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-center div div input,
+.top-seller-card-center div div input {
+    margin: 5px 0;
+}
+
+.card-center div div button {
+    display: inline-block;
+    font-family: var(--body-title-font);
+    font-weight: 500;
+    line-height: 2;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    align-self: center;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--body-bg-shadow);
+    border: 1px solid transparent;
+    font-size: 1.2rem;
+    border-radius: 0.25rem;
+    width: 25%;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.top-seller-card-center div div button {
+    display: inline-block;
+    font-family: var(--body-title-font);
+    font-weight: 500;
+    line-height: 2;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    align-self: center;
+    cursor: pointer;
+    user-select: none;
+    background-color: #FF0;
+    border: 1px solid transparent;
+    font-size: 1.2rem;
+    border-radius: 0.25rem;
+    width: 25%;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 #top-seller-sticker {
@@ -488,7 +632,7 @@ h3 {
 
 .card-center {
     display: flex;
-    padding: 20px;
+    padding: 15px;
     align-items: center;
     background-color: var(--body-bg-color);
 }
@@ -506,6 +650,12 @@ h3 {
     border-radius: 3px;
     font-size: 0.9rem;
     padding-left: 10px;
+}
+
+.card-center div div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .card-description {
@@ -734,6 +884,11 @@ h3 {
     margin-top: 50px;
 }
 
+#login-btn {
+    position: absolute;
+    top: 385px;
+    right: 20px;
+}
 
 .form-btn {
     display: inline-block;
@@ -964,6 +1119,10 @@ input[type=number] {
         background-color: var(--body-bg-shadow);
     }
 
+    .main-title h1 {
+        width: unset;
+    }
+
     .body-title h2 {
         font-size: 7vh;
     }
@@ -972,6 +1131,21 @@ input[type=number] {
         display: inline-flex;
         margin-top: 16px;
         margin-right: 1rem;
+    }
+
+    .menu {
+        top: 340px;
+    }
+
+    #login-btn {
+        top: 350px
+    }
+
+    .filter {
+        position: inherit;
+        width: fit-content;
+        align-self: center;
+        margin-bottom: 6rem;
     }
 
     .card {
@@ -1005,7 +1179,7 @@ input[type=number] {
     }
 
     .top-seller-card {
-        width: 70%vh;
+        width: 70%;
         flex-direction: column;
     }
 

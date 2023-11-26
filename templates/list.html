@@ -5,17 +5,50 @@
     </div>
     <div class="body-title">
         <h2>{{ title }}</h2>
-        {% if session['logged']%}
-            <form action="{{ url_for('logout') }}">
-                <button class="form-btn" type="submit">Logout</button>
-            </form>
+    </div>
+    {% if session['user']%}
+            <ul class="menu">
+                <li>
+                    <input type="checkbox" id="menu-bar">
+                    <label for="menu-bar">Menu⤵</label>
+                    <ul class="dropdown">
+                        <li> {{ user.username }} </li>
+                        <li> {{ user.points }} Points </li>
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
         {% else %}
             <form action="{{ url_for('login') }}">
-                <button class="form-btn" type="submit">Login</button>
+                <button id="login-btn" class="form-btn" type="submit">Login</button>
             </form>
         {% endif %}
-    </div>
     <form class="card-container" action="{{ url_for('cart') }}" method="post">
+        <div class="filter">
+            <p>Filter by intensity</p>
+            <ul id="intensities">
+                <li>
+                    <label for="intensity1">intensity 1</label>
+                    <input onchange="display()" type="checkbox" id="intensity1" value="1">
+                </li>
+                <li>
+                    <label for="intensity2">intensity 2</label>
+                    <input onchange="display()" type="checkbox" id="intensity2" value="2">
+                </li>
+                <li>
+                    <label for="intensity3">intensity 3</label>
+                    <input onchange="display()" type="checkbox" id="intensity3" value="3">
+                </li>
+                <li>
+                    <label for="intensity4">intensity 4</label>
+                    <input onchange="display()" type="checkbox" id="intensity4" value="4">
+                </li>
+                <li>
+                    <label for="intensity5">intensity 5</label>
+                    <input onchange="display()" type="checkbox" id="intensity5" value="5">
+                </li>
+            </ul>
+        </div>
         <div class="card-group">
             {% for drink in drinks %}
                 {% if top_seller_drink.id == drink.id %}
@@ -38,7 +71,27 @@
                                     <div>
                                         <input type="hidden" name="item_id" value="{{ drink.id }}">
                                         <input type="hidden" name="item_price" value="{{ drink.price }}">
-                                        <input type="number" name="quantity" value="0" min="0">
+                                        <input type="hidden" name="intensity" value="{{ drink.intensity }}">
+                                        <div>
+                                            <button type="button" id="{{ 'plusSignOf' ~ drink.id }}"> + </button>
+                                            <input type="number" inputmode="numeric" id="{{ 'quantityOf' ~ drink.id }}" name="quantity" value="0" min="0">
+                                            <button type="button" id="{{ 'minusSignOf' ~ drink.id }}"> - </button>
+                                            <script>
+                                                {{ 'quantityOf' ~ drink.id }}.value = 0
+                                                const {{ 'plusSignOf' ~ drink.id }} = document.getElementById("{{ 'plusSignOf' ~ drink.id }}");
+                                                const {{ 'minusSignOf' ~ drink.id }} = document.getElementById("{{ 'minusSignOf' ~ drink.id }}");
+
+                                                {{ 'plusSignOf' ~ drink.id }}.addEventListener("click", () => {
+                                                    {{ 'quantityOf' ~ drink.id }}.value++ ;
+                                                });
+
+                                                {{ 'minusSignOf' ~ drink.id }}.addEventListener("click", () => {
+                                                    if ({{ 'quantityOf' ~ drink.id }}.value > 0 ) {
+                                                        {{ 'quantityOf' ~ drink.id }}.value--;
+                                                    };
+                                                });
+                                            </script>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="top-seller-card-description">
@@ -58,6 +111,7 @@
                                 <p class="card-title">{{ drink.name }}
                                     {% if session['admin']%}
                                     <a href="{{ url_for('edit', id=drink.id) }}">Edit</a>
+
                                 {% endif %}
                                 </p>
                                 <div>
@@ -66,7 +120,29 @@
                                         <div>
                                             <input type="hidden" name="item_id" value="{{ drink.id }}">
                                             <input type="hidden" name="item_price" value="{{ drink.price }}">
-                                            <input type="number" name="quantity" value="0" min="0">
+                                            <input type="hidden" name="intensity" value="{{ drink.intensity }}">
+                                            <div>
+                                                <button type="button" id="{{ 'plusSignOf' ~ drink.id }}"> + </button>
+                                                <input type="number" inputmode="numeric" id="{{ 'quantityOf' ~ drink.id }}" name="quantity" value="0" min="0">
+                                                <button type="button" id="{{ 'minusSignOf' ~ drink.id }}"> - </button>
+                                                <script>
+                                                    {{ 'quantityOf' ~ drink.id }}.value = 0
+
+                                                    const {{ 'plusSignOf' ~ drink.id }} = document.getElementById("{{ 'plusSignOf' ~ drink.id }}");
+                                                    const {{ 'minusSignOf' ~ drink.id }} = document.getElementById("{{ 'minusSignOf' ~ drink.id }}");
+
+                                                    {{ 'plusSignOf' ~ drink.id }}.addEventListener("click", () => {
+                                                        {{ 'quantityOf' ~ drink.id }}.value++ ;
+                                                    });
+
+                                                    {{ 'minusSignOf' ~ drink.id }}.addEventListener("click", () => {
+                                                        if ({{ 'quantityOf' ~ drink.id }}.value > 0 ) {
+                                                            {{ 'quantityOf' ~ drink.id }}.value--;
+                                                        };
+                                                    });
+
+                                                </script>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="card-description">
@@ -81,5 +157,69 @@
         <div>
             <button style="margin: 20px 0 26px;" type="submit" class="form-btn">Add to cart</button>
         </div>
+        <script>
+                const inputs = document.querySelectorAll("input[type='checkbox']");
+                const cards = document.querySelectorAll('[name="intensity"]');
+                let notToDisplayCards = new Set();
+                let displayCards = new Set();
+
+                let checkboxes = inputs.values();
+                for (checkbox of checkboxes) {
+                    checkbox.checked = false;
+                }
+
+                function display() {
+                    let state = true;
+                    for (input of inputs) {
+                        if (input.checked != false) {
+                            state = false;
+                            break;
+                        }
+                    }
+                    console.log(state)
+
+                    if (state) {
+                        console.log("render")
+                        for (card of cards) {
+                            let topCard = card.parentElement.parentElement.parentElement.parentElement.parentElement
+                            topCard.style.display = 'flex';
+                        }
+                    } else {
+                        console.log("filter")
+                        filter();
+                    }
+                }
+
+                function filter () {
+                    notToDisplayCards.clear();
+                    displayCards.clear();
+
+                    for (input of inputs) {
+                        if (input.checked == false) {
+                            for (card of cards) {
+                                if (input.value == card.value) {
+                                    let topCard = card.parentElement.parentElement.parentElement.parentElement.parentElement
+                                    notToDisplayCards.add(topCard)
+                                }
+                            }
+                        } else {
+                            for (card of cards) {
+                                let topCard = card.parentElement.parentElement.parentElement.parentElement.parentElement
+                                if (input.value == card.value) {
+                                    notToDisplayCards.delete(topCard);
+                                    displayCards.add(topCard);
+                                }
+                            }
+                        }
+                    }
+
+                    for (card of notToDisplayCards) {
+                        card.style.display = 'none';
+                    }
+                    for (card of displayCards) {
+                        card.style.display = 'flex';
+                    }
+                }
+            </script>
     </form>
 {% endblock %}

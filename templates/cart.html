@@ -40,7 +40,7 @@
         </div>
         <div class="address-form">
             <h2>Confirm your address and payment:</h2>
-            <form method="post" action="checkout">
+            <form method="post" action="{{ url_for('checkout')}}">
                 <div>
                     <div>
                         <div>
@@ -63,13 +63,19 @@
                     <div>
                         <div >
                             <label>Credit Card Number</label>
-                            <input style="width: max-content" type="text" name="credit" required pattern="[0-9]{16-19}" maxlength="19" placeholder="XXXXXXXXXXXXXXXX">
+                            <input style="width: max-content" type="number" inputmode="numeric" name="credit" required pattern="[0-9]{16-19}" maxlength="19" placeholder="XXXXXXXXXXXXXXXX">
 
                         </div>
                         <div>
-                            <label >CVC</label>
-                            <input type="text" name="cvc" required pattern="[0-9]{3}" maxlength="3" placeholder="XXX">
+                            <label>CVC</label>
+                            <input type="number" inputmode="numeric" name="cvc" required pattern="[0-9]{3}" maxlength="3" placeholder="XXX">
                         </div>
+                        {% if 'logged' in session %}
+                        <div>
+                            <label onchange="updateTotalAmount()">Disccount</label>
+                            <input type="number" inputmode="numeric" name="discount" pattern="[0-9]" max="{{ points }}">
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <button class="form-btn" type="submit">Confirm order</button>
@@ -77,6 +83,30 @@
         </div>
     </div>
     <div>
-        <p class="total-amount-display"> TOTAL: ${{total_amount}}</p>
+        <p class="total-amount-display"> TOTAL: ${{ total_amount }}</p>
+        <input type="hidden" name="total-amount" value="{{ total_amount }}">
     </div>
+    <script>
+            const discountInput = document.querySelector('input[name="discount"]');
+            const totalAmountInput = document.querySelector('input[name="total-amount"]');
+            const totalAmountDisplay = document.querySelector('.total-amount-display');
+
+            discountInput.addEventListener('input', updateTotalAmount);
+
+            function updateTotalAmount() {
+                console.log("called")
+
+                if (discountInput.value) {
+                    const discountValue = parseFloat(discountInput.value) / 100;
+                    const totalAmountValue = parseFloat(totalAmountInput.value);
+
+                    const updatedTotalAmount = totalAmountValue - discountValue;
+                    console.log(updatedTotalAmount)
+
+                    totalAmountDisplay.textContent = `TOTAL: $${totalAmountValue} - $${discountValue} = $${updatedTotalAmount}`;
+                } else {
+                    totalAmountDisplay.textContent = `TOTAL: $${totalAmountInput.value}`
+                }
+            }
+    </script>
 {% endblock %}

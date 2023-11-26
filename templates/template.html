@@ -63,13 +63,32 @@
     <body class="body">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div>
+                <div id="frame">
                     <ul id="messages" class="list-unstyled">
                     {% for message in messages %}
                         <li class="alert alert-success">{{ message }}</li>
                     {% endfor %}
                     </ul>
                 </div>
+                <script>
+                    setTimeout(function() {
+                        var frameElement = document.getElementById("frame");
+                        var opacity = 1;
+
+                        (function fadeOut() {
+                            if (opacity <= 0) {
+                                frameElement.style.display = "none";
+                                return;
+                            }
+
+                            opacity -= 0.02;
+                            frameElement.style.opacity = opacity;
+                            requestAnimationFrame(fadeOut);
+
+                            requestAnimationFrame(fadeOut);
+                        })();
+                    }, 5000);
+                </script>
             {% endif %}
         {% endwith %}
         {% if main %}

@@ -20,11 +20,20 @@
                 {% endif %}
             {% endwith %}
             <div>
-                <h2 style="font-size: 4rem;">Login</h2>
-                <form method="POST" action="{{ url_for('authenticate') }}">
+                <h2 style="font-size: 4rem;">New User</h2>
+                <form method="POST" action="{{ url_for('create') }}">
                     <div>
                         <div>
-                            <input type="hidden" name="next" value="{{ next or url_for('index') }}">
+                            <input type="hidden" name="next" value="{{ url_for('index') }}">
+                            <input type="hidden" name="admin" value="">
+                            <div>
+                                <label style="font-size: 1.5rem;">First Name:</label>
+                                <input type="text" name="first" required>
+                            </div>
+                            <div>
+                                <label style="font-size: 1.5rem;">Last Name:</label>
+                                <input type="text" name="last" required>
+                            </div>
                             <div>
                                 <label style="font-size: 1.5rem;">Username:</label>
                                 <input type="text" name="user" required>
@@ -34,8 +43,7 @@
                                 <input type="password" name="password" required>
                             </div>
                             <div>
-                                <button class="form-btn" style="margin-top: 25px;" type="submit">Login</button>
-                                <p>Don't have an acount? <a href="{{ url_for('user') }}">Click here</a> to create one</p>
+                                <button class="form-btn" style="margin-top: 25px;" type="submit">Create</button>
                             </div>
                         </div>
                     </div>
